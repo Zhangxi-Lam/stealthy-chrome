@@ -1,0 +1,7 @@
+undetected-chromedriver/
+__pycache__/
+myenv/
+result/
+
+*.png
+*.html
