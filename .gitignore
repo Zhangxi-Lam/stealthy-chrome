@@ -2,6 +2,7 @@ undetected-chromedriver/
 __pycache__/
 myenv/
 result/
+.DS_Store
 
 *.png
 *.html

@@ -1,4 +1,5 @@
 import logging
+from lxml import html
 import time
 import selenium.webdriver.chrome.webdriver
 import selenium.webdriver.chrome.service
@@ -67,10 +68,6 @@ class StealthyChrome(selenium.webdriver.chrome.webdriver.WebDriver):
         self.execute_script(stealth_js)
 
 
-def main():
-    # vanila_chrome()
-    my_chrome()
-
 def my_chrome():
     # user_data_dir = "/Users/zhangxilin/Library/Application Support/Google/Chrome"
     user_data_dir = ""
@@ -81,6 +78,7 @@ def my_chrome():
 
     logging.info("Stealthy chrome saving page source")
     page_source = stealth_chrome.page_source
+    extract_page_source(page_source)
     with open("result/page_source.html", "w") as f:
         f.write(page_source)
 
@@ -98,6 +96,27 @@ def vanila_chrome():
     logging.info("Vanila chrome start saving screenshot")
     driver.save_screenshot("screenshot.png")
     logging.info("Vanila chrome screenshot saved")
+
+def extract_page_source(page_source):
+    tree = html.fromstring(page_source)
+    item = {}
+    title = tree.xpath("//*[@id='product-page']//h-product-info-header//h1//span/text()")
+    item["title"] = title[0].strip()
+
+    price = tree.xpath("//h-price/span/text()")
+    item["price"] = price[0].strip()
+
+    color_variants = tree.xpath("//*[@id='expansion-panel-title-color-variants']/div/span[3]/div/span/div/text()")
+    item["color_variants"] = color_variants[0].strip()
+
+    print(item)
+
+def main():
+    # vanila_chrome()
+    # my_chrome()
+    page_source = open("result/page_source.html", "r").read()
+    extract_page_source(page_source)
+
 
 
 if __name__ == "__main__":
